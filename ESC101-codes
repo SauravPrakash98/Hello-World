@@ -1,0 +1,299 @@
+//MERGE SORT-----------------------------------------------------------------------------------------------------------/
+
+#include<stdio.h>
+
+void merge(int a[],int b[],int m,int n){
+    int c[m+n];
+    int i=0,j=0;
+    int MAX=m+n;
+    for(int k=0;k<MAX;k++){
+        if(i<m&&j<n){
+            if(a[i]<=b[j]){
+                c[k]=a[i];
+                i++;
+            }
+            else{
+                c[k]=b[j];
+                j++;
+            }
+        }
+        else if(i==m){
+            c[k]=b[j];
+            j++;
+        }
+        else{
+            c[k]=a[i];
+            i++;
+        }
+        
+    }
+    for(int k=0;k<MAX;k++){
+        printf("%d ",c[k]);
+    }
+}
+int main(){
+    int m,n;
+    scanf("%d %d",&m,&n);
+    int a[m],b[n];
+    for(int i=0;i<m;i++) scanf("%d",&a[i]);
+    for(int i=0;i<n;i++) scanf("%d",&b[i]);
+    merge(a,a+3,3,2);
+    return 0;
+    
+}
+
+--//END----------------------------------------------------------------------------------------------------------------/
+
+//GCD CODE-------------------------------------------------------------------------------------------------------------/
+
+
+#include<stdio.h>
+int main()
+{
+    int a,b,c,r,e;
+    int gcd;
+    scanf("%d %d",&a,&b);
+   if(b>a){
+   e=a;
+   a=b;
+   b=e;
+   }
+        do{
+             r=a%b;
+             a=b;
+             b=r;
+             }while(b!=0);
+    printf("%d",a);
+    
+    
+return 0;   
+}
+
+--//END----------------------------------------------------------------------------------------------------------------/
+
+//ENTERING AND LEAVING THE ROOM PROBLEM--------------------------------------------------------------------------------/
+
+#include<stdio.h>
+void print(int arr[],int n){ //function to print array
+    for(int i=0;i<n;i++){
+        printf("%d",arr[i]);
+    }
+}
+void out(int arr[],int n,int l){
+    if(n==l){
+        print(arr,l);
+        printf("\n");
+        arr[n-1]=0;
+        return;
+    }
+    if(arr[n]==0) { 
+        in(arr,n+1,l); 
+        print(arr,l);
+        printf("\n");
+        arr[n-1]=0;
+    }
+    if(arr[n]==1){
+        out(arr,n+1,l);
+    }
+}
+void in(int arr[],int n,int l){
+    if(n==l) {
+        print(arr,l);
+        printf("\n");
+        arr[n-1]=1;
+        return;
+    }
+    if(arr[n]==0) {
+        in(arr,n+1,l);
+        print(arr,l);
+        printf("\n");
+        arr[n-1]=1;
+    }
+    if(arr[n-1]==1 && arr[n]==1) {
+        out(arr,n+1,l);
+    }
+}
+
+int main()
+{
+    int n;
+    scanf("%d",&n); 
+    int arr[n]; //declaring the array
+    for(int i=0;i<n;i++) arr[i]=0;//initialising all the values to zero
+    in(arr,1,n); //calling the function
+    print(arr,n);
+    return 0;
+}
+
+--//END------------------------------------------------------------------------------------------------------------------/
+
+//INSERTION SORT-----------------------------------------------------------------------------------------------------------/
+
+#include<stdio.h>
+void read_to_array(int arr[],int a) //function to read characters to array
+{
+    int i=0;
+    while(i<a){
+        scanf("%d",&arr[i]);
+        i=i+1;
+    }
+}
+void print_arr(int a[], int n) { //print the array
+    int i;
+    for(i=0;i<n-1;i++){
+        printf("%d ",a[i]);
+    }
+    printf("%d",a[n-1]);
+}
+void insertion_sort(int arr[],int i,int j){ //insertion sort
+    
+    int p=arr[i];
+    for(int k=i-1;k>=0;k--){ //for swapping
+         if(p>=arr[k]) break;
+         int temp=arr[k+1];
+         //   printf("\n%d %d %d\n",temp,arr[k],i);
+            arr[k+1]=arr[k];
+            arr[k]=temp; 
+    }
+ 
+    j--;
+    if(j!=0)
+   insertion_sort(arr,i+1,j);
+}
+int main() {
+int n,i;
+scanf("%d",&n);
+int a[n];
+read_to_array(a,n);
+for(i=0;i<n;i++) if(a[i]>=a[i+1]) break;
+print_arr(a,n);
+printf("\n");
+insertion_sort(a,i+1,n-1-i);
+print_arr(a,n);
+
+}
+
+--//END-------------------------------------------------------------------------------------------------------------------/
+
+//QUICK SORT AND PARTITION FUNCTION---------------------------------------------------------------------------------------/
+
+#include<stdio.h>
+void print(int arr[],int n){
+    for(int i=0;i<n;i++) printf("%d ",arr[i]);
+    printf("\n");
+}
+
+void swap(int *a,int *b){
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+
+int partition(int a[],int n){
+    int left=1,right=n-1,key=a[0];
+    while(left<=n-1 && right>=0){
+        while(a[left]<key) left+=1;
+        while(a[right]>key) right-=1;
+        if(left<right){
+            swap(a+left,a+right);
+            left+=1;
+            right-=1;
+        }
+        else{
+            swap(a,a+left-1);
+            return left-1;
+        }
+    }
+}
+
+void qsort(int a[],int n){
+    int pindex;
+    if(n<=1) return;
+    
+    else{
+    pindex=partition(a,n);
+    //printf("%d\n",pindex);
+    qsort(a,pindex);
+    qsort(a+pindex+1,n-pindex-1);
+    }
+    
+}
+
+int main(){
+    int n;
+    scanf("%d",&n);
+    int arnum[n];
+    for(int i=0;i<n;i++) scanf("%d",&arnum[i]);
+   // int p=partition(arnum,n);
+   // print(arnum,n);
+    qsort(arnum,n);
+   // printf("hey");
+    print(arnum,n);
+    return 0;
+}
+
+--//END----------------------------------------------------------------------------------------------------------------/
+
+//ALL BINARY PERMS.------------------------------------------------------------------------------------------------------/
+
+#include<stdio.h>
+void print(int arr[],int n){ //function to print array
+    for(int i=0;i<n;i++){
+        printf("%d",arr[i]);
+    }
+}
+void fun(int arr[],int n,int l,int *s){
+    if(n==l){
+        print(arr,l);
+        printf("\n");
+        return;
+    }
+    arr[n]=0;
+    fun(arr,n+1,l,arr);
+    arr[n]=1;
+    fun(arr,n+1,l,arr);
+}
+int main(){
+    int n;
+    scanf("%d",&n);
+    int arr[n];
+    fun(arr,0,n,arr);
+    return 0;
+}
+
+--//END-------------------------------------------------------------------------------------------------------------------/
+
+//SELECTION SORT----------------------------------------------------------------------------------------------------------/
+
+#include<stdio.h>
+void print(int a[],int n){
+    for(int i=0;i<n;i++) printf("%d ",a[i]);
+}
+void swap(int *a,int *b){
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+int * lrgst(int a[],int n){
+    int *max;
+    max=a;
+    for(int i=0;i<n;i++) if(a[i]>*max) max=a+i;
+    return max;
+}
+void sel_sort(int a[],int n){
+    if(n==1) return;
+    swap(a,lrgst(a,n));
+    sel_sort(a+1,n-1);
+}
+
+int main() {
+    int n;
+    scanf("%d",&n);
+    int a[n];
+    for(int i=0;i<n;i++) scanf("%d",&a[i]);
+    sel_sort(a,n);
+    print(a,n);
+    return 0;
+}
+
+--//END------------------------------------------------------------------------------------------------------------------/
