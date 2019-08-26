@@ -6,6 +6,14 @@ The following commits list out my contribution to ```netbsd-src```.
 |---|---|
 | Created imx8_platform.c and imx8_platform.h, and enabled its compilation with GENERIC64 kernel|https://github.com/SauravPrakash98/netbsd-src/commit/1a11c5e494f62b418eff7937bb1ad461a3b352c7|
 |Adding a temporary clock controller modules for imx8 | https://github.com/SauravPrakash98/netbsd-src/commit/4e8ddc777b03578925e45975dc1d8e4d6e494c1a |
+| Added composite clock driver code and an incomplete driver code for imx8mq ccm|https://github.com/SauravPrakash98/netbsd-src/commit/1aac7b016646ff19dac170500a6870947a3a4c00|
+|Added uart clocks and its parents in imx8mq ccm|https://github.com/SauravPrakash98/netbsd-src/commit/fd1b6fc03fac6f2bb785058950b8947b747efff6|
+|Added gate and gate2 driver, and created the struct for sccg pll clocks |https://github.com/SauravPrakash98/netbsd-src/commit/637f336422e971f4bf425f3b1e157daf7a545b98|
+| Added fixed-factor clock driver, and corrected the mux and div clock drivers|https://github.com/SauravPrakash98/netbsd-src/commit/118c90458b771eee8691c9683e5164ae164d7de4|
+|Added fdt based bus glue for uart driver of imx8|https://github.com/SauravPrakash98/netbsd-src/commit/5ff42a50b7cba5acc78b88e2e2c59b8a370a0ef6|
+|Added fdt based iomuxc driver of imx8mq|https://github.com/SauravPrakash98/netbsd-src/commit/15d88f799cd5e4b3d4be10f7d1db95de1e1adf95|
+| Enabled earlycons for hummingboard, the board boots till root device|https://github.com/SauravPrakash98/netbsd-src/commit/fa9befb8af15a7d1d3827f6d174a398b61c7f574|
+|Enabled the GPC driver for IMX8MQ, uart is now interrupting|https://github.com/SauravPrakash98/netbsd-src/commit/932405c2dcc7a33f82aabfd66e47fbf94ea4289f|
 
 Blog report for the phase 1
 
@@ -92,9 +100,6 @@ Dillinger is a cloud-enabled, mobile-ready, offline-storage, AngularJS powered H
   - See HTML in the right
   - Magic
 
-# New Features!
-  - Import a HTML file and watch it magically convert to Markdown
-  - Drag and drop images (requires your Dropbox account be linked)
 
 
 You can also:
@@ -102,7 +107,6 @@ You can also:
   - Drag and drop markdown and HTML files into Dillinger
   - Export documents as Markdown, HTML and PDF
 
-Markdown is a lightweight markup language based on the formatting conventions that people naturally use in email.  As [John Gruber] writes on the [Markdown site][df1]
 
 > The overriding design goal for Markdown's
 > formatting syntax is to make it as readable
@@ -128,112 +132,6 @@ Dillinger uses a number of open source projects to work properly:
 * [Breakdance](http://breakdance.io) - HTML to Markdown converter
 * [jQuery] - duh
 
-And of course Dillinger itself is open source with a [public repository][dill]
- on GitHub.
-
-### Installation
-
-Dillinger requires [Node.js](https://nodejs.org/) v4+ to run.
-
-Install the dependencies and devDependencies and start the server.
-
-```sh
-$ cd dillinger
-$ npm install -d
-$ node app
-```
-
-For production environments...
-
-```sh
-$ npm install --production
-$ NODE_ENV=production node app
-```
-
-### Plugins
-
-Dillinger is currently extended with the following plugins. Instructions on how to use them in your own application are linked below.
-
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
-
-
-### Development
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantanously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
-```sh
-$ node app
-```
-
-Second Tab:
-```sh
-$ gulp watch
-```
-
-(optional) Third:
-```sh
-$ karma test
-```
-#### Building for source
-For production release:
-```sh
-$ gulp build --prod
-```
-Generating pre-built zip archives for distribution:
-```sh
-$ gulp build dist --prod
-```
-### Docker
-Dillinger is very easy to install and deploy in a Docker container.
-
-By default, the Docker will expose port 8080, so change this within the Dockerfile if necessary. When ready, simply use the Dockerfile to build the image.
-
-```sh
-cd dillinger
-docker build -t joemccann/dillinger:${package.json.version} .
-```
-This will create the dillinger image and pull in the necessary dependencies. Be sure to swap out `${package.json.version}` with the actual version of Dillinger.
-
-Once done, run the Docker image and map the port to whatever you wish on your host. In this example, we simply map port 8000 of the host to port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
-
-```sh
-docker run -d -p 8000:8080 --restart="always" <youruser>/dillinger:${package.json.version}
-```
-
-Verify the deployment by navigating to your server address in your preferred browser.
-
-```sh
-127.0.0.1:8000
-```
-
-#### Kubernetes + Google Cloud
-
-See [KUBERNETES.md](https://github.com/joemccann/dillinger/blob/master/KUBERNETES.md)
-
-
-### Todos
-
- - Write MORE Tests
- - Add Night Mode
-
-License
-----
-
-MIT
-
 
 **Free Software, Hell Yeah!**
 
@@ -243,20 +141,3 @@ MIT
    [dill]: <https://github.com/joemccann/dillinger>
    [git-repo-url]: <https://github.com/joemccann/dillinger.git>
    [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
-
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
